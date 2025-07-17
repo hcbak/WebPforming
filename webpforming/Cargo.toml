@@ -4,3 +4,5 @@ version = "0.1.0"
 edition = "2025"
 
 [dependencies]
+image = { version = "0.25.6", features = ["webp"] }
+rayon = "1.10.0"
