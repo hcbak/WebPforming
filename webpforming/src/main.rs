@@ -4,8 +4,6 @@ use std::path::{Path, PathBuf};
 use std::ffi::OsStr;
 use rayon::prelude::*;
 
-use image::{codecs::webp::WebPEncoder, ImageEncoder};
-
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("\n - WebPforming - \n");
 
@@ -59,12 +57,11 @@ fn convert_to_webp(image_path: &Path) -> Result<(), Box<dyn std::error::Error>> 
 
     let mut webp_path = PathBuf::from(image_path);
     webp_path.set_extension("webp");
-
-    let mut file_out = fs::File::create(&webp_path)?;
     
     // 무손실 WebP 변환
-    let encoder = WebPEncoder::new_lossless(&mut file_out);
-    encoder.write_image(img.as_bytes(), img.width(), img.height(), img.color().into())?;
+    let encoder = webp::Encoder::from_image(&img)?;
+    let webp_memory = encoder.encode_lossless();
+    fs::write(&webp_path, &*webp_memory)?;
 
     println!("[+] 변환 완료 - '{}' → '{}'", get_filename_str(image_path), get_filename_str(&webp_path));
     Ok(())
