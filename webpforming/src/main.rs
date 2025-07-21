@@ -77,5 +77,8 @@ fn convert_to_webp(image_path: &Path) -> Result<(), Box<dyn std::error::Error>> 
     let webp_size = webp_path.metadata()?.len() as f64 / BYTES_IN_MEGABYTE;
 
     println!("[+] 변환 완료 - '{}({:.2}MB)' → '{}({:.2}MB)'", get_filename_str(image_path), img_size, get_filename_str(&webp_path), webp_size);
+
+    // 원본 이미지 삭제
+    fs::remove_file(image_path)?;
     Ok(())
 }
