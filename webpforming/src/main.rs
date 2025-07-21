@@ -54,7 +54,8 @@ fn get_filename_str(path: &Path) -> &str {
 /// 이미지 파일을 WebP로 변환 후 저장
 fn convert_to_webp(image_path: &Path) -> Result<(), Box<dyn std::error::Error>> {
     const BYTES_IN_MEGABYTE: f64 = 1048576.0; // 1024 × 1024
-    const LOSSY_COMPRESSION: &[&str] = &["jpeg", "jpg"]; // 손실 압축
+    const LOSSY_EXTENSION: &[&str] = &["jpeg", "jpg"]; // 손실 확장자
+    const LOSSY_QUALITY: f32 = 80.0; // 손실 품질
 
     let img = image::open(image_path)?;
 
@@ -65,8 +66,8 @@ fn convert_to_webp(image_path: &Path) -> Result<(), Box<dyn std::error::Error>> 
     let encoder = webp::Encoder::from_image(&img)?;
     let extension = image_path.extension().and_then(OsStr::to_str).unwrap_or("");
 
-    let webp_memory = if LOSSY_COMPRESSION.contains(&extension.to_lowercase().as_str()) {
-        encoder.encode(70.0)
+    let webp_memory = if LOSSY_EXTENSION.contains(&extension.to_lowercase().as_str()) {
+        encoder.encode(LOSSY_QUALITY)
     } else {
         encoder.encode_lossless()
     };
